@@ -76,3 +76,6 @@ class LiveSportsProvider:
 
     def get_historical_games(self, **filters) -> list[Game]:
         self._not_implemented()
+
+    def get_game_actual(self, game_id: str) -> dict | None:
+        self._not_implemented()

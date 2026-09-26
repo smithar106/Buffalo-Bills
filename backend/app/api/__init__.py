@@ -1,3 +1,3 @@
-from . import chat, news, schedule, stats
+from . import chat, news, predictions, schedule, stats
 
-__all__ = ["chat", "news", "schedule", "stats"]
+__all__ = ["chat", "news", "predictions", "schedule", "stats"]

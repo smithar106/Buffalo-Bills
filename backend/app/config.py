@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     news_provider: str = "mock"
 
     # Database
-    database_url: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/bills_mafia"
+    database_url: str = "sqlite:///./bills_mafia.db"
 
     # Observability
     mlflow_enabled: bool = False

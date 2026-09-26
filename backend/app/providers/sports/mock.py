@@ -249,6 +249,27 @@ H2H_DOLPHINS = [
     _game("2024-w2-mia-buf", 2, DOLPHINS, BILLS, "final", 10, 31, venue="Hard Rock Stadium", location="Miami Gardens, FL", season=2024),
 ]
 
+GAME_ACTUALS = {
+    "2026-w1-buf-nyj": {
+        "bills_score": 34,
+        "opponent_score": 17,
+        "first_td_scorer": "Josh Allen",
+        "allen_passing_yards": 285,
+    },
+    "2026-w2-mia-buf": {
+        "bills_score": 27,
+        "opponent_score": 24,
+        "first_td_scorer": "Khalil Shakir",
+        "allen_passing_yards": 310,
+    },
+    "2026-w3-buf-ne": {
+        "bills_score": 20,
+        "opponent_score": 10,
+        "first_td_scorer": "James Cook",
+        "allen_passing_yards": 240,
+    },
+}
+
 
 class MockSportsProvider:
     """Deterministic, clearly-labeled demo data provider."""
@@ -345,3 +366,6 @@ class MockSportsProvider:
             opp = opponent.lower()
             result = [g for g in result if opp in g.home_team.name.lower() or opp in g.away_team.name.lower()]
         return result
+
+    def get_game_actual(self, game_id: str) -> dict | None:
+        return GAME_ACTUALS.get(game_id)

@@ -1,14 +1,28 @@
 """Bills Mafia AI — FastAPI application entrypoint."""
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import chat, news, schedule, stats
+from app.api import chat, news, predictions, schedule, stats
 from app.config import get_settings
+from app.db.models import Base
+from app.db.session import engine, is_sqlite
 
 settings = get_settings()
 
-app = FastAPI(title="Bills Mafia AI", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # For local demo (SQLite), ensure tables exist. Production (PostgreSQL)
+    # uses Alembic migrations via the Railway start command.
+    if is_sqlite:
+        Base.metadata.create_all(bind=engine)
+    yield
+
+
+app = FastAPI(title="Bills Mafia AI", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +36,7 @@ app.include_router(schedule.router)
 app.include_router(stats.router)
 app.include_router(news.router)
 app.include_router(chat.router)
+app.include_router(predictions.router)
 
 
 @app.get("/health")

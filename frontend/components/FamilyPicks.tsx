@@ -20,14 +20,24 @@ export default function FamilyPicks() {
   const [user, setUser] = useState<FamilyUser | null>(null);
   const [board, setBoard] = useState<LeaderboardRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  const [billsScore, setBillsScore] = useState("31");
+  const [oppScore, setOppScore] = useState("24");
+  const [scorer, setScorer] = useState("Josh Allen");
+  const [yards, setYards] = useState("300");
+  const [mvp, setMvp] = useState("Josh Allen");
 
   useEffect(() => {
     const stored = localStorage.getItem("bills-mafia-user");
     if (stored) setUser(JSON.parse(stored));
-    get<{ leaderboard: LeaderboardRow[] }>("/api/family/leaderboard").then(
-      (r) => r && setBoard(r.leaderboard),
-    );
+    refreshBoard();
   }, []);
+
+  async function refreshBoard() {
+    const r = await get<{ leaderboard: LeaderboardRow[] }>("/api/family/leaderboard");
+    if (r) setBoard(r.leaderboard);
+  }
 
   async function createUser(e: React.FormEvent) {
     e.preventDefault();
@@ -47,6 +57,31 @@ export default function FamilyPicks() {
     localStorage.setItem("bills-mafia-user", JSON.stringify(data.user));
     setError(null);
   }
+
+  async function submitPrediction(e: React.FormEvent) {
+    e.preventDefault();
+    if (!user) return;
+    const r = await fetch(`${BASE}/api/family/predictions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: user.id,
+        bills_score: parseInt(billsScore, 10),
+        opponent_score: parseInt(oppScore, 10),
+        first_td_scorer: scorer,
+        allen_passing_yards: parseInt(yards, 10),
+        mvp,
+      }),
+    });
+    if (!r.ok) {
+      setError("Couldn't submit pick — is the API running?");
+      return;
+    }
+    setSaved(true);
+    setError(null);
+  }
+
+  const numberField = "w-full rounded-sm border border-bills-navy/20 px-3 py-2 text-sm outline-none focus:border-bills-blue";
 
   return (
     <div className="space-y-6">
@@ -75,9 +110,85 @@ export default function FamilyPicks() {
           {error && <p className="mt-2 text-xs text-bills-red">{error}</p>}
         </div>
       ) : (
-        <p className="text-sm text-bills-navy">
-          Picking as <span className="font-bold">{user.name}</span>
-        </p>
+        <div className="rounded-sm border border-bills-navy/10 bg-white p-6 shadow-card">
+          <h2 className="font-display text-lg font-bold uppercase tracking-tight text-bills-navy">
+            Make your pick
+          </h2>
+          <p className="mt-1 text-sm text-bills-steel">
+            Picking as <span className="font-bold text-bills-navy">{user.name}</span>.
+            Locks at kickoff.
+          </p>
+
+          <form onSubmit={submitPrediction} className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-bills-steel">
+                Bills score
+              </label>
+              <input
+                type="number"
+                value={billsScore}
+                onChange={(e) => setBillsScore(e.target.value)}
+                className={numberField}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-bills-steel">
+                Opponent score
+              </label>
+              <input
+                type="number"
+                value={oppScore}
+                onChange={(e) => setOppScore(e.target.value)}
+                className={numberField}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-bills-steel">
+                First Bills TD scorer
+              </label>
+              <input
+                value={scorer}
+                onChange={(e) => setScorer(e.target.value)}
+                className={numberField}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-bills-steel">
+                Josh Allen passing yards
+              </label>
+              <input
+                type="number"
+                value={yards}
+                onChange={(e) => setYards(e.target.value)}
+                className={numberField}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="text-xs font-semibold uppercase tracking-wide text-bills-steel">
+                Game MVP
+              </label>
+              <input
+                value={mvp}
+                onChange={(e) => setMvp(e.target.value)}
+                className={numberField}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <button
+                type="submit"
+                className="rounded-sm bg-bills-navy px-4 py-2.5 font-display text-sm font-bold uppercase tracking-wide text-white hover:bg-bills-blue"
+              >
+                Save pick
+              </button>
+              {saved && (
+                <span className="ml-3 text-sm font-semibold text-bills-blue">
+                  Pick saved
+                </span>
+              )}
+              {error && <p className="mt-2 text-xs text-bills-red">{error}</p>}
+            </div>
+          </form>
+        </div>
       )}
 
       <div className="rounded-sm border border-bills-navy/10 bg-white p-6 shadow-card">
