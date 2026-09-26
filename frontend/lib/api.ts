@@ -14,10 +14,9 @@ import type {
 } from "@/types";
 
 const BASE = process.env.API_URL || "http://localhost:8000";
-// Client components use the same-origin /api path, proxied to the backend via
-// the Next.js rewrite (see next.config.mjs). This avoids CORS and keeps the
-// API URL a server-only secret.
-const CLIENT_BASE = "";
+// Client components use the same-origin /api path, proxied to the backend at
+// runtime by middleware.ts (see frontend/middleware.ts). This avoids CORS and
+// keeps the API URL a server-only secret.
 
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`, { cache: "no-store" });
@@ -107,7 +106,7 @@ export const api = {
       `/api/head-to-head?opponent=${encodeURIComponent(opponent)}&start_season=${start}&end_season=${end}`,
     ),
   chat: (question: string, mode: ChatMode, context?: string) =>
-    fetch(`${CLIENT_BASE}/api/chat`, {
+    fetch(`/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question, mode, context }),

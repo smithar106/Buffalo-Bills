@@ -4,7 +4,7 @@
 
 | Service | Directory | Health check | Notes |
 |---------|-----------|--------------|-------|
-| `bills-web` | `frontend/` | `/healthz` | Next.js (standalone), proxies `/api/*` → `bills-api` |
+| `bills-web` | `frontend/` | `/healthz` | Next.js (standalone), proxies `/api/*` → `bills-api` via middleware |
 | `bills-api` | `backend/` | `/health` | FastAPI, runs `alembic upgrade head` on start |
 | `PostgreSQL` | Railway-managed | — | Inject connection string via `DATABASE_URL` |
 | `MLflow` | optional | — | Only if `MLFLOW_ENABLED=true` |
@@ -38,7 +38,10 @@ Each service has its own `Dockerfile` and `railway.json`.
 
 | Variable | Description |
 |----------|-------------|
-| `API_URL` | Public URL of the `bills-api` service (used for server-side fetches and the `/api` rewrite) |
+| `API_URL` | URL of the `bills-api` service. Use the private network address `http://bills-api.railway.internal:8080` (recommended) or a public domain. |
+
+> The `/api/*` proxy is implemented in `frontend/middleware.ts` (runtime), so
+> `API_URL` is read at request time — not baked into the build.
 
 ## CORS
 
