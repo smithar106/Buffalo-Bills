@@ -17,6 +17,7 @@ const body = Inter({
 export const metadata: Metadata = {
   title: "Bills Mafia AI",
   description: "Your family's Buffalo football intelligence agent.",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({

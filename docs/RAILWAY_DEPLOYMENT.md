@@ -2,49 +2,62 @@
 
 ## Services
 
-| Service | Type | Notes |
-|---------|------|-------|
-| `bills-web` | Next.js | Frontend, proxies `/api` to `bills-api` |
-| `bills-api` | FastAPI | Backend API + agent |
-| `PostgreSQL` | Database | Railway-provided |
-| `MLflow` | optional | Only if `MLFLOW_ENABLED=true` |
+| Service | Directory | Health check | Notes |
+|---------|-----------|--------------|-------|
+| `bills-web` | `frontend/` | `/healthz` | Next.js (standalone), proxies `/api/*` → `bills-api` |
+| `bills-api` | `backend/` | `/health` | FastAPI, runs `alembic upgrade head` on start |
+| `PostgreSQL` | Railway-managed | — | Inject connection string via `DATABASE_URL` |
+| `MLflow` | optional | — | Only if `MLFLOW_ENABLED=true` |
 
-## Configuration
+Each service has its own `Dockerfile` and `railway.json`.
 
-Railway uses the `Dockerfile` in each service directory. Set environment
-variables per-service in the Railway dashboard (never commit secrets).
+## Setup
 
-### bills-web
+1. Create a new Railway project and add three services from this repo
+   (each pointed at its subdirectory: `frontend`, `backend`, and a PostgreSQL plugin).
+2. Set the environment variables below per service.
+3. Deploy. `bills-api` runs migrations automatically on start.
 
-- `NEXT_PUBLIC_API_URL` — public URL of `bills-api` (e.g. the Railway-provided URL)
-- `PORT` — Railway injects this; Next.js should respect it
+## Environment variables
 
-### bills-api
+### bills-api (`backend/`)
 
-- `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL`
-- `SPORTS_DATA_PROVIDER` (`mock` or `live`)
-- `NEWS_PROVIDER` (`mock` or `live`)
-- `DATABASE_URL` — Railway PostgreSQL connection string
-- `MLFLOW_ENABLED` (`true`/`false`)
-- `CORS_ORIGINS` — comma-separated allowed origins
+| Variable | Description |
+|----------|-------------|
+| `LLM_API_KEY` | OpenAI-compatible API key |
+| `LLM_BASE_URL` | Provider base URL (default `https://api.openai.com/v1`) |
+| `LLM_MODEL` | Model id (e.g. `gpt-4o-mini`) |
+| `SPORTS_DATA_PROVIDER` | `mock` or `live` |
+| `NEWS_PROVIDER` | `mock` or `live` |
+| `DATABASE_URL` | Railway PostgreSQL connection string (auto-injected) |
+| `CORS_ORIGINS` | Comma-separated frontend origins |
+| `MLFLOW_ENABLED` | `true`/`false` |
+| `MLFLOW_TRACKING_URI` | MLflow tracking server URI (optional) |
 
-## Health checks
+### bills-web (`frontend/`)
 
-- Backend: `GET /health` → `{"status": "ok"}`. Configure Railway healthcheck to
-  this path for `bills-api`.
-- Frontend: serves `/api/health` locally; Railway healthcheck can hit `/`.
-
-## Migrations
-
-Run `alembic upgrade head` on deploy. In Railway this runs as part of the
-`bills-api` start command (see the API Dockerfile/start script).
+| Variable | Description |
+|----------|-------------|
+| `API_URL` | Public URL of the `bills-api` service (used for server-side fetches and the `/api` rewrite) |
 
 ## CORS
 
-The backend reads `CORS_ORIGINS` and restricts origins accordingly. In
-production, restrict to the deployed frontend domain.
+`CORS_ORIGINS` on the API must include the deployed `bills-web` origin (e.g.
+`https://bills-web-production-XXXX.up.railway.app`). Client-side requests go
+through the same-origin `/api` rewrite, but the API also allows direct calls
+from the frontend if needed.
 
-## Production error handling
+## Health checks
 
-- The API returns structured JSON errors and never leaks stack traces.
-- The agent handles LLM/sports-provider failure with deterministic fallbacks.
+- `bills-api`: `GET /health` → `{"status": "ok"}`.
+- `bills-web`: `GET /healthz` → `{"status": "ok"}`.
+
+## Migrations
+
+`bills-api` runs `alembic upgrade head` on every start (see `backend/start.sh`),
+so schema changes apply automatically from an empty or existing database.
+
+## Secrets
+
+Never commit secrets. All credentials are injected via Railway environment
+variables; `.env` files are gitignored.

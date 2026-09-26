@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { FamilyUser, LeaderboardRow } from "@/types";
 
-const BASE = process.env.API_URL || "http://localhost:8000";
+const BASE = "";
 
 async function get<T>(path: string): Promise<T | null> {
   try {
