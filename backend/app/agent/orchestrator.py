@@ -12,6 +12,7 @@ from typing import Any
 
 from app.providers.llm import LLMClient, LLMError
 from app.providers.sports import get_sports_provider
+from app.services.observability import record_agent_run, record_mlflow
 
 from .grounding import build_fallback_answer, validate_answer
 from .prompts import RETRY_INSTRUCTION, build_system_prompt, build_user_prompt
@@ -84,6 +85,10 @@ def run(question: str, mode: str | None = None, context: str | None = None) -> A
         result["fallback"] = True
         result["validation"] = {"result": "no_llm", "unsupported": []}
         result["total_latency_ms"] = int((time.monotonic() - started) * 1000)
+        record_agent_run(
+            question, result["mode"], tool_calls_log, evidence,
+            None, result["total_latency_ms"], "no_llm", True,
+        )
         return result
 
     # Determine the current season to give the agent accurate context.
@@ -142,6 +147,10 @@ def run(question: str, mode: str | None = None, context: str | None = None) -> A
         result["sources"] = _build_sources(evidence)
         result["tool_calls"] = tool_calls_log
         result["total_latency_ms"] = int((time.monotonic() - started) * 1000)
+        record_agent_run(
+            question, result["mode"], tool_calls_log, evidence,
+            result["llm_latency_ms"], result["total_latency_ms"], "llm_error", True,
+        )
         return result
 
     # Grounding validation.
@@ -180,4 +189,21 @@ def run(question: str, mode: str | None = None, context: str | None = None) -> A
     result["sources"] = _build_sources(evidence)
     result["tool_calls"] = tool_calls_log
     result["total_latency_ms"] = int((time.monotonic() - started) * 1000)
+
+    record_agent_run(
+        question, result["mode"], tool_calls_log, evidence,
+        result["llm_latency_ms"], result["total_latency_ms"],
+        result["validation"]["result"], result["fallback"],
+    )
+    record_mlflow(
+        question,
+        result["mode"],
+        {
+            "llm_latency_ms": result["llm_latency_ms"] or 0,
+            "total_latency_ms": result["total_latency_ms"],
+            "tool_calls": len(tool_calls_log),
+            "fallback": int(result["fallback"]),
+            "sources": len(result["sources"]),
+        },
+    )
     return result
