@@ -125,10 +125,11 @@ def _game(
     venue="Highmark Stadium",
     location="Orchard Park, NY",
     day_offset=0,
+    season=None,
 ) -> Game:
     return Game(
         id=gid,
-        season=MOCK_SEASON,
+        season=MOCK_SEASON if season is None else season,
         week=week,
         home_team=home,
         away_team=away,
@@ -236,16 +237,16 @@ PLAYS_GAME1 = [
 ]
 
 H2H_CHIEFS = [
-    _game("2024-w11-buf-kc", 11, BILLS, CHIEFS, "final", 30, 21, venue="Highmark Stadium", location="Orchard Park, NY", day_offset=0),
-    _game("2023-w14-kc-buf", 14, CHIEFS, BILLS, "final", 20, 17, venue="Arrowhead Stadium", location="Kansas City, MO", day_offset=1),
-    _game("2023-post-kc-buf", 19, BILLS, CHIEFS, "final", 24, 27, venue="Highmark Stadium", location="Orchard Park, NY", day_offset=2),
-    _game("2022-w6-buf-kc", 6, CHIEFS, BILLS, "final", 24, 20, venue="Arrowhead Stadium", location="Kansas City, MO", day_offset=3),
+    _game("2024-w11-buf-kc", 11, BILLS, CHIEFS, "final", 30, 21, venue="Highmark Stadium", location="Orchard Park, NY", day_offset=0, season=2024),
+    _game("2023-w14-kc-buf", 14, CHIEFS, BILLS, "final", 20, 17, venue="Arrowhead Stadium", location="Kansas City, MO", day_offset=1, season=2023),
+    _game("2023-post-kc-buf", 19, BILLS, CHIEFS, "final", 24, 27, venue="Highmark Stadium", location="Orchard Park, NY", day_offset=2, season=2023),
+    _game("2022-w6-buf-kc", 6, CHIEFS, BILLS, "final", 24, 20, venue="Arrowhead Stadium", location="Kansas City, MO", day_offset=3, season=2022),
 ]
 
 H2H_DOLPHINS = [
-    _game("2026-w2-mia-buf", 2, BILLS, DOLPHINS, "final", 27, 24),
-    _game("2025-w9-mia-buf", 9, BILLS, DOLPHINS, "final", 31, 10),
-    _game("2024-w2-mia-buf", 2, DOLPHINS, BILLS, "final", 10, 31, venue="Hard Rock Stadium", location="Miami Gardens, FL"),
+    _game("2026-w2-mia-buf", 2, BILLS, DOLPHINS, "final", 27, 24, season=2026),
+    _game("2025-w9-mia-buf", 9, BILLS, DOLPHINS, "final", 31, 10, season=2025),
+    _game("2024-w2-mia-buf", 2, DOLPHINS, BILLS, "final", 10, 31, venue="Hard Rock Stadium", location="Miami Gardens, FL", season=2024),
 ]
 
 

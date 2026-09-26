@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import news, schedule, stats
+from app.api import chat, news, schedule, stats
 from app.config import get_settings
 
 settings = get_settings()
@@ -21,6 +21,7 @@ app.add_middleware(
 app.include_router(schedule.router)
 app.include_router(stats.router)
 app.include_router(news.router)
+app.include_router(chat.router)
 
 
 @app.get("/health")
