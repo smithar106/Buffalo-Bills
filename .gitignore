@@ -19,6 +19,7 @@ node_modules/
 out/
 dist/
 .env*.local
+.playwright-cli/
 
 # OS
 .DS_Store

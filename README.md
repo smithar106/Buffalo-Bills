@@ -119,6 +119,24 @@ See [`docs/RAILWAY_DEPLOYMENT.md`](docs/RAILWAY_DEPLOYMENT.md).
 
 ---
 
+## Known limitations
+
+- **Live providers are stubs.** `LiveSportsProvider` and `LiveNewsProvider` raise a
+  clear "not available" error; a real NFL/news API still needs to be integrated
+  (see `docs/DATA_PROVIDERS.md`). The app is fully functional in `mock` mode.
+- **Mock data is a fixed 2026 season** — deterministic and clearly labeled `DEMO DATA`.
+- **Family picks use lightweight name-based profiles** (no real authentication) by
+  design. Locking at kickoff and automated scoring require a live data source to
+  supply the actual result facts (first TD scorer, Allen passing yards).
+- **Grounding uses number-presence validation.** It reliably rejects fabricated
+  scores/stats, but legitimate derived counts (e.g. "two players injured") can
+  occasionally trigger a retry/fallback — which is the intended safe behavior.
+- **No rate limiting or auth on the API** — intended for a private family app.
+- News is clearly labeled demo content in mock mode; the agent distinguishes
+  reported news/analysis from factual sports data.
+
+---
+
 ## Disclaimer
 
 **Unofficial fan project. Not affiliated with the Buffalo Bills or NFL.**

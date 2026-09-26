@@ -2,8 +2,9 @@
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.api import chat, news, predictions, schedule, stats
 from app.config import get_settings
@@ -37,6 +38,17 @@ app.include_router(stats.router)
 app.include_router(news.router)
 app.include_router(chat.router)
 app.include_router(predictions.router)
+
+
+@app.exception_handler(NotImplementedError)
+async def provider_not_available(request: Request, exc: NotImplementedError):
+    return JSONResponse(
+        status_code=503,
+        content={
+            "detail": "Data provider not available. "
+            "Set SPORTS_DATA_PROVIDER=mock / NEWS_PROVIDER=mock or configure a live provider."
+        },
+    )
 
 
 @app.get("/health")
