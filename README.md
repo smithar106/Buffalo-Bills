@@ -140,4 +140,3 @@ See [`docs/RAILWAY_DEPLOYMENT.md`](docs/RAILWAY_DEPLOYMENT.md).
 ## Disclaimer
 
 **Unofficial fan project. Not affiliated with the Buffalo Bills or NFL.**
-
