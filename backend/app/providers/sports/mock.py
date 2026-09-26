@@ -86,8 +86,16 @@ RAIDERS = Team(
     conference="AFC",
     division="AFC West",
 )
+CHARGERS = Team(
+    id="sd",
+    name="San Diego Chargers",
+    abbreviation="SD",
+    city="San Diego",
+    conference="AFC",
+    division="AFC West",
+)
 
-TEAMS = [BILLS, DOLPHINS, PATRIOTS, JETS, CHIEFS, TITANS, RAVENS, RAIDERS]
+TEAMS = [BILLS, DOLPHINS, PATRIOTS, JETS, CHIEFS, TITANS, RAVENS, RAIDERS, CHARGERS]
 
 ROSTER = [
     Player(id="p_allen", name="Josh Allen", number=17, position="QB", height="6'5\"", weight=237, college="Wyoming", experience=9),
@@ -156,7 +164,7 @@ SCHEDULE = [
           [QuarterScore(quarter=1, home=3, away=7), QuarterScore(quarter=2, home=0, away=3),
            QuarterScore(quarter=3, home=7, away=7), QuarterScore(quarter=4, home=0, away=3)],
           venue="Gillette Stadium", location="Foxborough, MA"),
-    _game("2026-w4-kc-buf", 4, BILLS, CHIEFS, "scheduled", venue="Highmark Stadium", location="Orchard Park, NY", day_offset=3),
+    _game("2026-w4-sd-buf", 4, BILLS, CHARGERS, "scheduled", venue="Highmark Stadium", location="Orchard Park, NY", day_offset=3),
     _game("2026-w5-buf-ten", 5, TITANS, BILLS, "scheduled", venue="Nissan Stadium", location="Nashville, TN"),
     _game("2026-w6-nyj-buf", 6, BILLS, JETS, "scheduled"),
     _game("2026-w7-buf-lv", 7, RAIDERS, BILLS, "scheduled", venue="Allegiant Stadium", location="Las Vegas, NV"),

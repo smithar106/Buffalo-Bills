@@ -15,11 +15,11 @@ ARTICLES = [
     ),
     NewsItem(
         id="n2",
-        title="Bills vs. Chiefs set for Sunday night showdown",
+        title="Bills vs. Chargers set for Sunday showdown",
         publisher="Bills Mafia Wire (DEMO)",
         published_at=datetime(2026, 9, 23, 14, 0, tzinfo=timezone.utc),
-        url="https://example.com/bills-chiefs-preview",
-        summary="Buffalo hosts Kansas City in a marquee early-season AFC matchup.",
+        url="https://example.com/bills-chargers-preview",
+        summary="Buffalo hosts San Diego in a marquee early-season AFC matchup.",
     ),
     NewsItem(
         id="n3",

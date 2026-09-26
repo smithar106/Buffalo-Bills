@@ -1,10 +1,10 @@
 """Tests for the mock sports provider (deterministic golden facts)."""
 
 
-def test_next_game_is_chiefs(mock_provider):
+def test_next_game_is_chargers(mock_provider):
     game = mock_provider.get_next_game()
     assert game.status == "scheduled"
-    assert "Chiefs" in game.home_team.name or "Chiefs" in game.away_team.name
+    assert "Chargers" in game.home_team.name or "Chargers" in game.away_team.name
 
 
 def test_recent_games_are_final(mock_provider):

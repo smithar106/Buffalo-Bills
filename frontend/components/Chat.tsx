@@ -70,7 +70,13 @@ export default function Chat({ context }: { context?: string }) {
         {MODES.map((m) => (
           <button
             key={m.id}
-            onClick={() => setMode(m.id)}
+            onClick={() => {
+              if (m.id !== mode) {
+                setMode(m.id);
+                setMessages([]);
+                setInput("");
+              }
+            }}
             className={`rounded-sm px-3 py-1 text-xs font-bold uppercase tracking-wide transition-colors ${
               mode === m.id
                 ? "bg-bills-red text-white"

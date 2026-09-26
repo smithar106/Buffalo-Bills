@@ -19,7 +19,7 @@ from app.agent import run
 
 # (question, expected_tool, expected_facts, expect_no_fallback)
 CASES = [
-    ("Who do the Bills play next?", "get_next_game", ["chiefs"], True),
+    ("Who do the Bills play next?", "get_next_game", ["chargers"], True),
     ("What is Buffalo's record?", "get_standings", ["3", "0"], True),
     ("Who leads the Bills in receiving?", "get_player_stats", ["khalil shakir", "280"], True),
     ("How many passing yards did Josh Allen have?", "get_player_stats", ["835"], True),
