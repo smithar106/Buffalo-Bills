@@ -10,6 +10,7 @@ from app.api import chat, news, predictions, schedule, stats
 from app.config import get_settings
 from app.db.models import Base
 from app.db.session import engine, is_sqlite
+from app.providers.sports.bbs import BBSError
 
 settings = get_settings()
 
@@ -48,6 +49,14 @@ async def provider_not_available(request: Request, exc: NotImplementedError):
             "detail": "Data provider not available. "
             "Set SPORTS_DATA_PROVIDER=mock / NEWS_PROVIDER=mock or configure a live provider."
         },
+    )
+
+
+@app.exception_handler(BBSError)
+async def bbs_error(request: Request, exc: BBSError):
+    return JSONResponse(
+        status_code=503,
+        content={"detail": f"Live sports data unavailable: {exc}"},
     )
 
 

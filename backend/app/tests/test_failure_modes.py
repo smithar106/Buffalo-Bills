@@ -12,16 +12,12 @@ def test_sports_provider_unavailable_returns_503(monkeypatch):
     get_settings.cache_clear()
     get_sports_provider.cache_clear()
     monkeypatch.setenv("SPORTS_DATA_PROVIDER", "live")
+    monkeypatch.setenv("BBS_API_KEY", "")
     get_settings.cache_clear()
 
     client = TestClient(app)
     resp = client.get("/api/next-game")
     assert resp.status_code == 503
-
-    get_settings.cache_clear()
-    get_sports_provider.cache_clear()
-    monkeypatch.setenv("SPORTS_DATA_PROVIDER", "mock")
-    get_settings.cache_clear()
 
 
 def test_news_provider_unavailable_returns_503(monkeypatch):
@@ -35,8 +31,3 @@ def test_news_provider_unavailable_returns_503(monkeypatch):
     client = TestClient(app)
     resp = client.get("/api/news")
     assert resp.status_code == 503
-
-    get_settings.cache_clear()
-    get_news_provider.cache_clear()
-    monkeypatch.setenv("NEWS_PROVIDER", "mock")
-    get_settings.cache_clear()

@@ -28,6 +28,8 @@ Each service has its own `Dockerfile` and `railway.json`.
 | `LLM_BASE_URL` | Provider base URL (default `https://api.openai.com/v1`) |
 | `LLM_MODEL` | Model id (e.g. `gpt-4o-mini`) |
 | `SPORTS_DATA_PROVIDER` | `mock` or `live` |
+| `BBS_API_KEY` | Big Balls Data bearer key (required for `live` sports data) |
+| `BBS_BASE_URL` | Big Balls Data base URL (default `https://api.bigballsdata.com`) |
 | `NEWS_PROVIDER` | `mock` or `live` |
 | `DATABASE_URL` | Railway PostgreSQL connection string (auto-injected) |
 | `CORS_ORIGINS` | Comma-separated frontend origins |

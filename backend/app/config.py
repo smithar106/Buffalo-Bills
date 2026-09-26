@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     sports_data_provider: str = "mock"
     news_provider: str = "mock"
 
+    # Big Balls Data (live sports provider)
+    bbs_api_key: str = ""
+    bbs_base_url: str = "https://api.bigballsdata.com"
+
     # Database
     database_url: str = "sqlite:///./bills_mafia.db"
 

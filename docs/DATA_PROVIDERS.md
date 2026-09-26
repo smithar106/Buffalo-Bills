@@ -24,10 +24,14 @@ No credentials. The UI shows a `DEMO DATA` badge whenever mock mode is active.
 
 ### LiveSportsProvider
 
-Structured so a real NFL/sports API can be plugged in later. Configure the
-provider in `backend/app/providers/sports/__init__.py` and add any required
-credentials to `.env`. When `SPORTS_DATA_PROVIDER=live`, the live adapter is
-used; its output is normalized to the same pydantic models as mock.
+Backed by [Big Balls Data](https://bigballsdata.com) (a unified sports-data API).
+Configure with `BBS_API_KEY` (a `bbs_live_...` bearer key) and `BBS_BASE_URL`
+(defaults to `https://api.bigballsdata.com`). When `SPORTS_DATA_PROVIDER=live`,
+the live adapter fetches real NFL schedules, scores, standings, rosters, injuries,
+and player/team stats, then normalizes them to the same pydantic models as mock.
+
+Play-by-play requires the BBS Pro plan, so `get_play_by_play` returns an empty
+list on lower tiers (the app degrades gracefully).
 
 ## News
 

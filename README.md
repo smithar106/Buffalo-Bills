@@ -78,6 +78,7 @@ See `.env.example` in each service. Key variables:
 | `LLM_BASE_URL` | Provider base URL | — |
 | `LLM_MODEL` | Model identifier | — |
 | `SPORTS_DATA_PROVIDER` | `mock` or `live` | `mock` |
+| `BBS_API_KEY` | Big Balls Data key (for `live` sports data) | — |
 | `NEWS_PROVIDER` | `mock` or `live` | `mock` |
 | `DATABASE_URL` | PostgreSQL connection string | — |
 | `MLFLOW_ENABLED` | Enable MLflow tracking | `false` |
@@ -121,9 +122,11 @@ See [`docs/RAILWAY_DEPLOYMENT.md`](docs/RAILWAY_DEPLOYMENT.md).
 
 ## Known limitations
 
-- **Live providers are stubs.** `LiveSportsProvider` and `LiveNewsProvider` raise a
-  clear "not available" error; a real NFL/news API still needs to be integrated
-  (see `docs/DATA_PROVIDERS.md`). The app is fully functional in `mock` mode.
+- **Live sports data via Big Balls Data.** `LiveSportsProvider` fetches real NFL
+  schedules, scores, standings, rosters, injuries, and player/team stats. It
+  requires a `BBS_API_KEY`; play-by-play needs the Pro plan (degrades gracefully).
+- **News provider is a stub** — `LiveNewsProvider` needs a news API wired in.
+  News stays in mock mode (clearly labeled demo articles).
 - **Mock data is a fixed 2026 season** — deterministic and clearly labeled `DEMO DATA`.
 - **Family picks use lightweight name-based profiles** (no real authentication) by
   design. Locking at kickoff and automated scoring require a live data source to
